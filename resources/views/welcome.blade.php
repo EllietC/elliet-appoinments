@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Integrate Bootstrap Datepicker in Laravel </title>
+    <title>Appoinments</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css">
 </head>
@@ -14,14 +14,16 @@
     <div class="row" style="margin-right: 30px; margin-left: 30px;">
         <div class="col-md-6">
             <h2 class="mb-4">Dancing with Death</h2>
-            <div>Seleccione una fecha para ver las horas disponibles</div>
+            <label>Seleccione una fecha para ver las horas disponibles</label>
             <div class="form-group">
                 <div class='input-group date' id='datetimepicker'>
-                    <input type='text' class="form-control" id="date" value="Ejemplo" />
+                    <input type='text' class="form-control" id="date" />
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span>
                 </div>
+                <label>Email</label>
+                <input type='text' class="form-control" id="email" />
                 <br>
                 <button type="submit" class="btn btn-default btn-primary consulta">Consultar</button>
             </div>
@@ -67,7 +69,7 @@
             var tbody = $('#tblOne tbody');
             tbody.empty();
             var request = $.ajax({
-                url: "http://elliet.oxus.cl/api/appoinments/" + date,
+                url: "https://elliet.oxus.cl/api/appoinments/" + date,
                 type: "GET"
             });
             request.done(function(data) {
@@ -99,15 +101,16 @@
         }
     });
     $(document).on('click', '.link-add', function(){
-        time = ($(this).text()).split(':', 1);
-        date = $(this).attr('value');
-        new_time = date + ' ' + time + ':00:00';
-        data = "InputJSON:" +  JSON.stringify({ email: "carreno@gmail.com", date:new_time});
-        $body={'email':'hola@gmail.com',
-                'date':new_time}
-        var request = $.ajax({
+        email = $('#email').val();
+        if(email != ""){
+            time = ($(this).text()).split(':', 1);
+            date = $(this).attr('value');
+            new_time = date + ' ' + time + ':00:00';
+            $body={'email':email,
+                    'date':new_time}
+            var request = $.ajax({
                 data: $body,
-                url: "http://elliet.oxus.cl/api/appoinments",
+                url: "https://elliet.oxus.cl/api/appoinments",
                 type: "POST"
             });
             request.done(function(data) {
@@ -118,6 +121,10 @@
             request.fail(function(error) {
                 console.log('Error: ', error);
             });
+        }else{
+            window.alert('Es necesario colocar el email');
+        }
+        
     });
 </script>
 <style>
