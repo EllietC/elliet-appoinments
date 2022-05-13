@@ -27,25 +27,28 @@
                 <br>
                 <button type="submit" class="btn btn-default btn-primary consulta">Consultar</button>
             </div>
+            <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+            <button type="submit" class="btn btn-default btn-primary ver_citas">Ver Citas</button>
         </div>
         <div class="col-md-6 table-date" style="margin-top:70px; display:none">
             <label class="col-md-4">Seleccione una hora<br>para agendar</label>
             <div class="col-md-8">
                 <table id="tblOne">
                     <tbody>
-                        <tr>
-                            <td class="link-add">
-                                Prueba
-                            </td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
-
+        </div>
+        <div class="col-md-6 table-dates" style="margin-top:70px; display:none">
+            <label class="col-md-4">Citas</label>
+            <div class="col-md-8">
+                <table id="tblTwo">
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-
-
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
@@ -73,6 +76,7 @@
                 type: "GET"
             });
             request.done(function(data) {
+                $('.table-dates').css('display', 'none');
                 $('.table-date').css('display', 'flex');
                 console.log(data['data']);
                 var rowLength = data['data'].length;
@@ -124,8 +128,34 @@
         }else{
             window.alert('Es necesario colocar el email');
         }
-        
     });
+    $('.ver_citas').click(function(){
+        var tbody = $('#tblTwo tbody');
+        tbody.empty();
+        var request = $.ajax({
+            url: "https://elliet.oxus.cl/api/appoinments",
+            type: "GET"
+        });
+        request.done(function(data) {
+            $('.table-date').css('display', 'none');
+            $('.table-dates').css('display', 'flex');
+            console.log(data['data']);
+            var rowLength = data['data'].length;
+            for (var i = 0; i < rowLength; i += 1) {
+                var tr = $('<tr/>');
+                var row = data['data'][i];
+                hora = row['date'];
+                email = row['email'];
+                tr.append($('<td/>').append(email));
+                tr.append($('<td/>').append(hora));
+                tbody.append(tr);
+            }
+        });
+        request.fail(function(error) {
+            console.log('Error: ', error);
+            return window.alert('Error al mostrar las citas');
+        });
+    })
 </script>
 <style>
     #tblOne {
