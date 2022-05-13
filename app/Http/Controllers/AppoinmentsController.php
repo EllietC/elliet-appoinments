@@ -48,7 +48,7 @@ class AppoinmentsController extends Controller
 
     public function update(Request $request, $id)
     {
-        $appoinment=Appoinments::find($id);
+        $appoinment=Appoinments::find('id',$id);
         if (!$appoinment)
         {
             return response()->json(['errors'=>array(['code'=>404,'message'=>'No se encuentra una cita con ese código.'])],404);
@@ -93,7 +93,7 @@ class AppoinmentsController extends Controller
 
     public function destroy($id)
     {
-        $appoinment=Appoinments::find($id);
+        $appoinment=Appoinments::find('id',$id);
 
         if (!$appoinment)
         {
