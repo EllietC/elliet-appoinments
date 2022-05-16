@@ -9,7 +9,7 @@ class AppoinmentsController extends Controller
 {
     public function index()
     {
-        return response()->json(['status'=>'ok','data'=>Appoinments::all()], 200);
+        return response()->json(['status'=>'Ok','data'=>Appoinments::all()], 200);
     }
 
 	public function store(Request $request)
@@ -28,7 +28,7 @@ class AppoinmentsController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Cita creada exitosamente!'
+            'message' => '!Cita creada exitosamente!'
         ], 201);
 	}
     public function show($date)
@@ -38,7 +38,7 @@ class AppoinmentsController extends Controller
 		{
             return response()->json(['errors'=>array(['code'=>404,'message'=>'Ya existe una cita.'])],404);
         }
-		return response()->json(['status'=>'ok','data'=>$appoinment]);
+		return response()->json(['status'=>'Ok','data'=>$appoinment]);
     }
 
     public function edit($id)
@@ -48,7 +48,7 @@ class AppoinmentsController extends Controller
 
     public function update(Request $request, $id)
     {
-        $appoinment=Appoinments::find('id',$id);
+        $appoinment=Appoinments::find($id);
         if (!$appoinment)
         {
             return response()->json(['errors'=>array(['code'=>404,'message'=>'No se encuentra una cita con ese código.'])],404);
@@ -58,18 +58,18 @@ class AppoinmentsController extends Controller
 
         if ($request->method() === 'PATCH')
         {
-            $bandera = false;
+            $change = false;
             if ($date)
             {
                 $appoinment->date = $date;
-                $bandera=true;
+                $change=true;
             }
             if ($email)
             {
                 $appoinment->email = $email;
-                $bandera=true;
+                $change=true;
             }
-            if ($bandera)
+            if ($change)
             {
                 $appoinment->save();
                 return response()->json(['status'=>'ok','data'=>$appoinment], 200);
@@ -93,13 +93,12 @@ class AppoinmentsController extends Controller
 
     public function destroy($id)
     {
-        $appoinment=Appoinments::find('id',$id);
+        $appoinment=Appoinments::find($id);
 
         if (!$appoinment)
         {
             return response()->json(['errors'=>array(['code'=>404,'message'=>'No se encuentra una cita con ese código.'])],404);
         }
-
         $appoinment->delete();
         return response()->json(['code'=>204,'message'=>'Se ha eliminado la cita correctamente.'],204);
     }
