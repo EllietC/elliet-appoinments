@@ -4,10 +4,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <title>Appoinments</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>
 </head>
 
 <body>
@@ -25,10 +28,10 @@
                 <label>Email</label>
                 <input type='text' class="form-control" id="email" />
                 <br>
-                <button type="submit" class="btn btn-default btn-primary consulta">Consultar</button>
+                <button type="submit" class="btn btn-default btn-primary see_free_hours">Consultar</button>
             </div>
             <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-            <button type="submit" class="btn btn-default btn-primary ver_citas">Ver Citas</button>
+            <button type="submit" class="btn btn-default btn-primary show_dates">Ver Citas</button>
         </div>
         <div class="col-md-6 table-date" style="margin-top:70px; display:none">
             <label class="col-md-4">Seleccione una hora<br>para agendar</label>
@@ -50,20 +53,10 @@
         </div>
     </div>
 </body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>
 <script type="text/javascript">
-    $(function() {
-        $('#datetimepicker').datetimepicker({
-            format: 'YYYY-MM-DD'
-        });
-    });
-
-    $('.consulta').click(function() {
+    $('.see_free_hours').click(function() {
         dates = ['09', '10', '11', '12', '13', '14', '15', '16', '17', '18'];
-        formatted_dates = ['09:00 AM', '10:00 AM', '11:00 AM', '12:00 AM', '13:00 PM', '14:00 PM', '15:00 PM', '16:00 PM', '17:00 PM', '18:00 PM'];
+        formatted_dates = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
         date = $("#datetimepicker").find("input").val();
         day = new Date(date).getDay();
         console.log(day);
@@ -89,7 +82,10 @@
                     formatted_dates.splice(a, 1);
                 }
                 for (var i = 0; i < formatted_dates.length; i += 1) {
-                    var tr = $('<tr/>',{ class: 'link-add', value: date});
+                    var tr = $('<tr/>', {
+                        class: 'link-add',
+                        value: date
+                    });
                     tr.append($('<td/>').append(formatted_dates[i]));
                     tbody.append(tr);
                 }
@@ -104,14 +100,16 @@
             return window.alert('!Solo se realizan citas de Lunes a Viernes¡');
         }
     });
-    $(document).on('click', '.link-add', function(){
+    $(document).on('click', '.link-add', function() {
         email = $('#email').val();
-        if(email != ""){
+        if (email != "") {
             time = ($(this).text()).split(':', 1);
             date = $(this).attr('value');
             new_time = date + ' ' + time + ':00:00';
-            $body={'email':email,
-                    'date':new_time}
+            $body = {
+                'email': email,
+                'date': new_time
+            }
             var request = $.ajax({
                 data: $body,
                 url: "https://elliet.oxus.cl/api/appoinments",
@@ -125,11 +123,11 @@
             request.fail(function(error) {
                 console.log('Error: ', error);
             });
-        }else{
+        } else {
             window.alert('Es necesario colocar el email');
         }
     });
-    $('.ver_citas').click(function(){
+    $('.show_dates').click(function() {
         var tbody = $('#tblTwo tbody');
         tbody.empty();
         var request = $.ajax({
@@ -156,10 +154,16 @@
             return window.alert('Error al mostrar las citas');
         });
     })
+
+    $(function() {
+        $('#datetimepicker').datetimepicker({
+            format: 'YYYY-MM-DD'
+        });
+    });
 </script>
 <style>
     #tblOne {
-        width: 23%;
+        width: 17%;
         border: 1px solid #000;
         background-color: #eeeeee;
 
